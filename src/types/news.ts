@@ -8,6 +8,11 @@ export interface NewsArticle {
   category: string;
   content?: string;
   author?: string;
+  readingTime?: number; // in minutes
+  sentiment?: 'positive' | 'negative' | 'neutral';
+  credibilityScore?: number; // 0-100
+  socialShares?: number;
+  relatedArticles?: string[];
 }
 
 export interface NewsApiResponse {
@@ -24,4 +29,6 @@ export interface UserPreferences {
     daily: boolean;
     weekly: boolean;
   };
+  readingMode: 'comfortable' | 'compact' | 'magazine';
+  theme: 'light' | 'dark' | 'auto';
 }

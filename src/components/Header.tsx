@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Search, Menu, Bell, User, Heart, Settings } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, Menu, Bell, User, Heart, Settings, Zap, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AdvancedSearch, SearchFilters } from './AdvancedSearch';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,13 +15,25 @@ import { Badge } from '@/components/ui/badge';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
+  onAdvancedSearch: (filters: SearchFilters) => void;
   onLoginClick: () => void;
   isAuthenticated: boolean;
   userEmail?: string;
 }
 
-export const Header = ({ onSearch, onLoginClick, isAuthenticated, userEmail }: HeaderProps) => {
+export const Header = ({ onSearch, onAdvancedSearch, onLoginClick, isAuthenticated, userEmail }: HeaderProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+
+  const defaultFilters: SearchFilters = {
+    query: '',
+    categories: [],
+    dateRange: 'all',
+    sortBy: 'relevance',
+    sentiment: 'all',
+    minCredibility: 0,
+    readingTime: [1, 10],
+    hasImage: false,
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,55 +41,95 @@ export const Header = ({ onSearch, onLoginClick, isAuthenticated, userEmail }: H
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <motion.header 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+    >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-4">
+          {/* Enhanced Logo */}
+          <motion.div 
+            className="flex items-center space-x-4"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-                <span className="text-white font-bold text-sm">N</span>
-              </div>
+              <motion.div 
+                className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Zap className="text-white h-4 w-4" />
+              </motion.div>
               <h1 className="text-xl font-playfair font-semibold text-foreground">
                 NewsFlow
               </h1>
+              <motion.div
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="ml-2"
+              >
+                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-medium">
+                  LIVE
+                </span>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Enhanced Search Bar */}
+          <div className="flex-1 max-w-md mx-8">
+            <div className="flex space-x-2">
+              <form onSubmit={handleSearch} className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Search breaking news, topics, sources..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 w-full bg-muted/50 border-0 focus:bg-background transition-colors"
+                />
+              </form>
+              
+              <AdvancedSearch 
+                onSearch={onAdvancedSearch}
+                initialFilters={defaultFilters}
+              />
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="flex-1 max-w-md mx-8">
-            <form onSubmit={handleSearch} className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                type="text"
-                placeholder="Search news..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 w-full bg-muted/50 border-0 focus:bg-background transition-colors"
-              />
-            </form>
-          </div>
-
-          {/* Navigation */}
-          <div className="flex items-center space-x-4">
+          {/* Enhanced Navigation */}
+          <div className="flex items-center space-x-3">
             {isAuthenticated ? (
               <>
-                <Button variant="ghost" size="sm" className="relative">
-                  <Bell className="h-5 w-5" />
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                    3
-                  </Badge>
-                </Button>
+                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                  <Button variant="ghost" size="sm" className="relative">
+                    <Bell className="h-5 w-5" />
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center"
+                    >
+                      <Badge className="h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500 text-white">
+                        3
+                      </Badge>
+                    </motion.div>
+                  </Button>
+                </motion.div>
                 
-                <Button variant="ghost" size="sm">
-                  <Heart className="h-5 w-5" />
-                </Button>
+                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                  <Button variant="ghost" size="sm">
+                    <Heart className="h-5 w-5" />
+                  </Button>
+                </motion.div>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="relative">
-                      <User className="h-5 w-5" />
-                    </Button>
+                    <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                      <Button variant="ghost" size="sm" className="relative">
+                        <User className="h-5 w-5" />
+                      </Button>
+                    </motion.div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <div className="flex items-center justify-start gap-2 p-2">
@@ -103,13 +157,16 @@ export const Header = ({ onSearch, onLoginClick, isAuthenticated, userEmail }: H
                 </DropdownMenu>
               </>
             ) : (
-              <Button onClick={onLoginClick} variant="default" size="sm">
-                Sign In
-              </Button>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button onClick={onLoginClick} variant="default" size="sm" className="bg-primary hover:bg-primary-hover">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  Get Premium
+                </Button>
+              </motion.div>
             )}
           </div>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 };
