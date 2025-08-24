@@ -1,40 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Premium News Aggregator Design System */
 
 @layer base {
   :root {
+    /* Premium color palette */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 215 28% 17%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 28% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 28% 17%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Premium blue */
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 221 83% 48%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: Soft gray */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 215 28% 17%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted: Light backgrounds */
+    --muted: 210 40% 98%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent: Vibrant highlight */
+    --accent: 12 76% 61%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 221 83% 53%;
+
+    /* News specific colors */
+    --news-tech: 262 83% 58%;
+    --news-business: 142 76% 36%;
+    --news-sports: 24 95% 53%;
+    --news-health: 339 82% 52%;
+    --news-entertainment: 280 100% 70%;
+    --news-politics: 0 84% 60%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(262 83% 58%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53% / 0.1), hsl(262 83% 58% / 0.05));
+
+    /* Shadows */
+    --shadow-card: 0 1px 3px hsl(215 28% 17% / 0.1), 0 1px 2px hsl(215 28% 17% / 0.06);
+    --shadow-card-hover: 0 4px 6px hsl(215 28% 17% / 0.07), 0 2px 4px hsl(215 28% 17% / 0.06);
+    --shadow-elevated: 0 10px 15px hsl(215 28% 17% / 0.1), 0 4px 6px hsl(215 28% 17% / 0.05);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --radius: 0.5rem;
 
@@ -100,6 +128,55 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter antialiased;
   }
+}
+
+@layer components {
+  /* News Card Animations */
+  .news-card {
+    @apply transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .news-card:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* Category Badge Styles */
+  .category-tech { @apply bg-violet-100 text-violet-700 border-violet-200; }
+  .category-business { @apply bg-emerald-100 text-emerald-700 border-emerald-200; }
+  .category-sports { @apply bg-orange-100 text-orange-700 border-orange-200; }
+  .category-health { @apply bg-rose-100 text-rose-700 border-rose-200; }
+  .category-entertainment { @apply bg-purple-100 text-purple-700 border-purple-200; }
+  .category-politics { @apply bg-red-100 text-red-700 border-red-200; }
+
+  /* Smooth fade in animation */
+  .fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  /* Stagger animation for news cards */
+  .stagger-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: staggerFadeIn 0.6s ease-out forwards;
+  }
+
+  .stagger-fade-in:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-fade-in:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-fade-in:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-fade-in:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-fade-in:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-fade-in:nth-child(6) { animation-delay: 0.6s; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes staggerFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
